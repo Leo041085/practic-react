@@ -8,5 +8,6 @@ const User = ({user}) => {
                </p>
            </li>
 }
-
 export default User;
+
+console.log(123);
