@@ -6,8 +6,8 @@ export const UsersList = ({ users }) => {
     <ul>
       {users.map(user => {
         return (
-          <Section>
-            <User key={user.id} user={user} />
+          <Section key={user.id}>
+            <User  user={user} />
           </Section>
         );
       })}
