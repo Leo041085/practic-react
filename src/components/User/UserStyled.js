@@ -14,3 +14,12 @@ export const Text = styled.p`
     return hasJob ? 'green' : 'black';
   }};
 `;
+
+export const StyledBtn = styled.button`
+background-color: green;
+color: white;
+border: none;
+border-radius: 10px;
+padding: 10px;
+cursor: pointer;
+`
