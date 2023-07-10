@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import data from '../users.json';
 import Section from './Section/Section';
 import Button from './Button/Button';
-import Form from './Form/Form';
+// import Form from './Form/Form';
 import { Component } from 'react';
 import FormikForm from './FormFormic/FormFormic';
 
