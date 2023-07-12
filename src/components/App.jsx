@@ -7,12 +7,41 @@ import Button from './Button/Button';
 import { Component } from 'react';
 import FormikForm from './FormFormic/FormFormic';
 import Filter from './FilterForm/Filter';
+import Modal from './Modal/Modal';
 
 export class App extends Component {
   state = {
-    users: data,
+    users: null,
     isShowForm: false,
-    filterQuery: ''
+    userDetails: null,
+  };
+
+  componentDidUpdate( prevProps, prevState) {
+    if (prevState.users !== this.state.users) {
+      localStorage.setItem('users', JSON.stringify(this.state.users))
+    }
+  };
+
+  componentDidMount() {
+    const stringifiedUsers = localStorage.getItem('users');
+    // const parsedUsers = JSON.parse(stringifiedUsers)??data;
+    // if (!parsedUsers.length) {
+    //   this.setState({users: data})
+    // } else {
+    //   this.setState({ users: parsedUsers });
+    // }
+
+    stringifiedUsers && JSON.parse(stringifiedUsers).length > 0
+      ? this.setState({ users: JSON.parse(stringifiedUsers) })
+      : this.setState({ users: data });
+  };
+  
+  openDetails=(user)=> {
+    this.setState({userDetails: user})
+  };
+
+  closeModal = () => {
+    this.setState({ userDetails: null })
   };
 
   handleDelete = id => {
@@ -22,7 +51,6 @@ export class App extends Component {
       };
     });
   };
-
   handleChangeJob = id => {
     this.setState(preState => {
       return {
@@ -65,18 +93,20 @@ export class App extends Component {
   render() {
     return (
       <Section title="UsersList">
-        <Filter handleChange={this.handleChangeFilter}/>
-        <UsersList
+        <Filter handleChange={this.handleChangeFilter} />
+        {this.state.users && (<UsersList
           users={this.state.users}
           handleDelete={this.handleDelete}
           handleChangeJob={this.handleChangeJob}
-        />
+          openDetails={this.openDetails}
+        />)} 
         {!this.state.isShowForm ? (
           <Button text="Open form" handleClick={this.openForm} />
         ) : (
           // <Form onFormSubmit={this.addUser} closeForm={this.closeForm} />
           <FormikForm onFormSubmit={this.addUser} closeForm={this.closeForm} />
         )}
+        {this.state.userDetails && (<Modal user={this.state.userDetails} close={this.closeModal}/>)}
       </Section>
     );
   }
