@@ -1,49 +1,77 @@
 import { UsersList } from './UserList/UsersList';
 import { nanoid } from 'nanoid';
-import data from '../users.json';
 import Section from './Section/Section';
 import Button from './Button/Button';
 // import Form from './Form/Form';
 import { Component } from 'react';
 import FormikForm from './FormFormic/FormFormic';
-import Filter from './FilterForm/Filter';
+//import Filter from './FilterForm/Filter';
 import Modal from './Modal/Modal';
+import { requestUsers } from 'Api/user';
 
 export class App extends Component {
+  
+  static limit = 10;
+  static skip = 10;
+
   state = {
     users: null,
     isShowForm: false,
     userDetails: null,
+    isShowUsers: false,
+    isLoading: false,
+    error: '',
+    page: 1,
   };
 
-  componentDidUpdate( prevProps, prevState) {
-    if (prevState.users !== this.state.users) {
-      localStorage.setItem('users', JSON.stringify(this.state.users))
+  componentDidUpdate(prevProps, prevState) {
+    const { isShowUsers, page } = this.state;
+    
+    // if (isShowUsers !== prevState.isShowUsers && isShowUsers) {
+    //   this.handleUsers(page)
+    // }
+
+    if (isShowUsers !== prevState.isShowUsers && !isShowUsers) {
+      this.setState({users: null})
+    };
+
+    // if (page !== prevState.page) {
+    //   this.handleUsers(page)
+    // }
+
+    if (isShowUsers && (prevState.isShowUsers !== isShowUsers || prevState.page !== page)) {
+      this.handleUsers(page);
+    };
+  };
+  
+  toggleUsers = () => {
+    this.setState((prevState) => { return { isShowUsers: !prevState.isShowUsers } })
+  };
+
+  handleUsers = async (numberPage) => {
+    const skip = numberPage * App.skip - App.limit;
+    try {
+      this.setState({ isLoading: true })
+      const data = await requestUsers(skip, App.limit);
+      this.setState((prevState) => { return { users: prevState.users ? [...prevState.users, ...data.users] : data.users } });
+      console.log(data);
+    } catch (error) {
+      this.setState({error: error.message})
+    } finally {
+      this.setState({ isLoading: false })
     }
   };
 
-  componentDidMount() {
-    const stringifiedUsers = localStorage.getItem('users');
-    // const parsedUsers = JSON.parse(stringifiedUsers)??data;
-    // if (!parsedUsers.length) {
-    //   this.setState({users: data})
-    // } else {
-    //   this.setState({ users: parsedUsers });
-    // }
-
-    stringifiedUsers && JSON.parse(stringifiedUsers).length > 0
-      ? this.setState({ users: JSON.parse(stringifiedUsers) })
-      : this.setState({ users: data });
+  loadMore = () => {
+    this.setState((prevState) => { return { page: prevState.page + 1 } });
   };
-  
+
   openDetails=(user)=> {
     this.setState({userDetails: user})
   };
-
   closeModal = () => {
     this.setState({ userDetails: null })
   };
-
   handleDelete = id => {
     this.setState(prevState => {
       return {
@@ -82,31 +110,28 @@ export class App extends Component {
       };
     });
   };
-
-  handleChangeFilter = e => {
-    // e.target.value 
-    this.setState({ 
-      users: data.filter(user => user.name.toLowerCase().includes(e.target.value.toLowerCase()))
-    }) 
-  }
+  
 
   render() {
+    const {error, isLoading, users, isShowUsers, isShowForm, userDetails } = this.state;
     return (
       <Section title="UsersList">
-        <Filter handleChange={this.handleChangeFilter} />
-        {this.state.users && (<UsersList
-          users={this.state.users}
+        <Button text={isShowUsers ? "Hide users" : "Show users"} handleClick={this.toggleUsers} />
+        {error && <h2>{error}</h2>}
+        {isLoading && <h2>Loading...</h2>}
+        {users && (<UsersList
+          users={users}
           handleDelete={this.handleDelete}
           handleChangeJob={this.handleChangeJob}
           openDetails={this.openDetails}
         />)} 
-        {!this.state.isShowForm ? (
+        {users && <Button text="Load more" handleClick={this.loadMore}/>}
+        {!isShowForm ? (
           <Button text="Open form" handleClick={this.openForm} />
         ) : (
-          // <Form onFormSubmit={this.addUser} closeForm={this.closeForm} />
           <FormikForm onFormSubmit={this.addUser} closeForm={this.closeForm} />
         )}
-        {this.state.userDetails && (<Modal user={this.state.userDetails} close={this.closeModal}/>)}
+        {userDetails && (<Modal user={userDetails} close={this.closeModal}/>)}
       </Section>
     );
   }
