@@ -6,6 +6,6 @@ const instance = axios.create({
 
 export const requestUsers = async (skip, limit) => {
     const { data } = await instance.get(`/users?skip=${skip}&limit=${limit}`);
-    return data;
+    return data.users;
 };
 
