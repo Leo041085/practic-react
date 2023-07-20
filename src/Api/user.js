@@ -14,3 +14,8 @@ export const requestUser = async id => {
   console.log(data);
   return data;
 };
+
+export const searchUsers = async query => {
+  const { data } = await instance.get(`/users/search?q=${query}`);
+  return data;
+};
