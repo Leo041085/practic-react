@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Title = styled.h2`
@@ -5,7 +6,7 @@ export const Title = styled.h2`
   text-decoration: underline;
 
   &:hover {
-    color: blue;
+    color: orange;
   }
 `;
 
@@ -16,10 +17,15 @@ export const Text = styled.p`
 `;
 
 export const StyledBtn = styled.button`
-background-color: green;
-color: white;
-border: none;
-border-radius: 10px;
-padding: 10px;
-cursor: pointer;
-`
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+`;
+
+export const StyledLink = styled(Link)`
+  color: black;
+  text-decoration: none;
+`;
