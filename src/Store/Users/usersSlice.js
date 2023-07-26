@@ -12,6 +12,12 @@ function handleRejected(state, {payload}){
     state.error = payload
 }
 
+//Використовуємо коли немає try catch та rejectWithValue
+// function handleRejected(state, {error}){
+//     state.isLoading = false
+//     state.error = error.message
+// }
+
 function handleFulfilled(state, {payload}){    
     state.isLoading = false
     state.users = payload
