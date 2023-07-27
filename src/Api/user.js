@@ -9,9 +9,9 @@ export const requestUsers = async (skip, limit) => {
   return data.users;
 };
 
-export const getAllUsers = async () => {
-  const { data } = await instance.get(`/users`);
-  return data.users;
+export const getAllUsers = async (page, limit) => {
+  const { data } = await instance.get(`/users?page=${page}&limit=${limit}`);
+  return data;
 };
 
 export const requestUser = async id => {
