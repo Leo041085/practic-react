@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAllUsersThunk } from './usersThunks';
+import { getAllUsersThunk, getUserThunk } from './usersThunks';
 import initialState from './initialState';
 
 function handlePending(state){
@@ -29,6 +29,11 @@ function handleFulfilled(state, {payload}){
     state.users.page = payload.page
 }
 
+function handleFulfilledUser(state, {payload}){
+  state.users.isLoading = false
+  state.userDetails = payload
+}
+
 const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -36,10 +41,11 @@ const usersSlice = createSlice({
     setFilter: (state, {payload})=>{state.filter = payload}
   },
   extraReducers: builder => {
-    builder
-    .addCase(getAllUsersThunk.pending, handlePending)
-    .addCase(getAllUsersThunk.rejected, handleRejected)
+    builder        
     .addCase(getAllUsersThunk.fulfilled, handleFulfilled)
+    .addCase(getUserThunk.fulfilled, handleFulfilledUser)
+    .addMatcher(action=>action.type.endsWith('/pending'), handlePending)
+    .addMatcher(action=>action.type.endsWith('/rejected'), handleRejected)
   },
 });
 

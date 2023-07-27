@@ -9,7 +9,7 @@ const User = ({ user, handleDelete, openDetails }) => {
       <Text>Phone Number: {user.phone}</Text>
       <StyledBtn onClick={() => handleDelete(user.id)}>Delete</StyledBtn>
       {/* <StyledBtn onClick={()=>openDetails(user)}>Details </StyledBtn>*/}
-      <StyledLink to={`${user.id}`} state={location}>
+      <StyledLink to={`${user._id}`} state={location}>
         Details
       </StyledLink>
     </li>
