@@ -6,26 +6,43 @@ import SearchForm from 'components/SearchForm/SearchForm';
 import Button from 'components/Button/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsersThunk } from 'Store/Users/usersThunks';
+import { setFilter } from 'Store/Users/usersSlice';
+import { filterUsersSelector, usersSelector } from 'Store/Users/usersSelectors';
 
 const LIMIT = 10;
 const SKIP = 10;
 
 function UsersPage() {
-  const { users, isLoading, error } = useSelector(state => state.users);
+  const {
+    items: users,
+    isLoading,
+    error,
+    page,
+    total,
+  } = useSelector(usersSelector);
+  const filter = useSelector(filterUsersSelector)
+
   const [isShowUsers, setIsShowUsers] = useState(false);
   const dispatch = useDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
   // const [page] = useState(1);
-  // const [searchParams, setSearchParams] = useSearchParams();
+   const [searchParams, setSearchParams] = useSearchParams();
 
-  // const ref = useRef(true);
+  const searchQuery = useMemo(() => {
+    return searchParams.get('search') ?? '';
+  }, [searchParams]);
 
-  // const searchQuery = useMemo(() => {
-  //   return searchParams.get('search') ?? '';
-  // }, [searchParams]);
+  useEffect(() => {
+    !searchQuery && setSearchParams({});
+  }, [searchQuery, setSearchParams]);
 
-  // useEffect(() => {
-  //   !searchQuery && setSearchParams({});
-  // }, [searchQuery, setSearchParams]);
+  useEffect(()=>{
+    if(searchQuery){
+      dispatch(setFilter(searchQuery))
+    }else{
+      dispatch(setFilter(''))
+    }
+  },[dispatch, searchQuery])
 
   // const getSearchResult = async query => {
   //   try {
@@ -43,13 +60,12 @@ function UsersPage() {
   //   ref.current && searchQuery && getSearchResult(searchQuery);
   // }, [searchQuery]);
 
-  useEffect(() => {    
-
-    if (isShowUsers) {
-      dispatch(getAllUsersThunk());
+  //page, limit
+  useEffect(() => {
+    if (isShowUsers || page !== currentPage) {
+      dispatch(getAllUsersThunk({ page: currentPage, limit: LIMIT }));
     }
-    
-  }, [dispatch, isShowUsers]);
+  }, [dispatch, isShowUsers, page, currentPage]);
 
   // const handleDelete = id => {
   //   setUsers(prevState => prevState.filter(user => user.id !== id));
@@ -70,6 +86,9 @@ function UsersPage() {
       return !prevState;
     });
   };
+  function loadMore(){
+    setCurrentPage(prev => prev +1)
+  }
 
   return (
     <>
@@ -79,18 +98,20 @@ function UsersPage() {
       />
       {error && <h2>{error}</h2>}
       {isLoading && <h2>Loading...</h2>}
-      {/* <SearchForm
-        //refSearch={ref}
-        // getSearchResult={getSearchResult}
-        // searchQuery={searchQuery}
-        // setSearchParams={setSearchParams}
-      /> */}
+      <SearchForm        
+        searchQuery={filter}
+        setSearchParams={setSearchParams}
+      />
       {users && (
-        <UsersList
-          users={users}
-          //handleDelete={handleDelete}
-          //handleChangeJob={handleChangeJob}
-        />
+        <>
+          <UsersList
+            users={users}
+            //handleDelete={handleDelete}
+            //handleChangeJob={handleChangeJob}
+          />
+
+          <Button text="Load more" handleClick={loadMore} />
+        </>
       )}
     </>
   );

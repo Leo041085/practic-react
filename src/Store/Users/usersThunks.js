@@ -4,9 +4,9 @@ import { getAllUsers } from "Api/user";
 
 export const getAllUsersThunk = createAsyncThunk(
     'users/getUsers',
-    async(_, {rejectWithValue})=>{
+    async({page, limit}, {rejectWithValue})=>{
         try{
-            const allUsers = await getAllUsers()
+            const allUsers = await getAllUsers(page, limit)
             return allUsers
         }
         catch(error){

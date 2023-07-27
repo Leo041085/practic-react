@@ -2,22 +2,21 @@ import React from 'react';
 
 const SearchForm = ({
   searchQuery,
-  setSearchParams,
-  getSearchResult,
-  refSearch,
+  setSearchParams, 
+ 
 }) => {
   const handleChange = ({ target: { value } }) => {
     setSearchParams({ search: value });
-    refSearch.current = false;
+    
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    getSearchResult(searchQuery);
-  };
+  // const handleSubmit = e => {
+  //   e.preventDefault();
+  //   getSearchResult(searchQuery);
+  // };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <label>
         name:
         <input onChange={handleChange} type="search" value={searchQuery} />
