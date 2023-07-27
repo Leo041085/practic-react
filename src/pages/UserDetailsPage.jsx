@@ -1,21 +1,20 @@
 import { requestUser } from 'Api/user';
+import { getUserThunk } from 'Store/Users/usersThunks';
 import { Text, Title } from 'components/User/UserStyled';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 function UserDetailsPage() {
-  const [user, setUser] = useState(null);
+  const user = useSelector(state=> state.users.userDetails);
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const detailUser = async () => {
-      const user = await requestUser(id);
-      setUser(user);
-    };
-    detailUser();
-  }, [id]);
+    id && dispatch(getUserThunk(id))
+  }, [dispatch, id]);
 
   const handleClick = () => {
     navigate(location.state);

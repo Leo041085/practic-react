@@ -4,19 +4,13 @@ const instance = axios.create({
   baseURL: 'https://practices-api.vercel.app',
 });
 
-export const requestUsers = async (skip, limit) => {
-  const { data } = await instance.get(`/users?skip=${skip}&limit=${limit}`);
-  return data.users;
-};
-
 export const getAllUsers = async (page, limit) => {
   const { data } = await instance.get(`/users?page=${page}&limit=${limit}`);
   return data;
 };
 
 export const requestUser = async id => {
-  const { data } = await instance.get(`/users/${id}`);
-  console.log(data);
+  const { data } = await instance.get(`/users/${id}`);  
   return data;
 };
 

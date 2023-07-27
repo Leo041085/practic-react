@@ -7,6 +7,7 @@ const initialState = {
         page: 0,
     },
     filter: '',
+    userDetails: null,
 }
 
 export default initialState
