@@ -1,8 +1,4 @@
-import axios from 'axios';
-
-const instance = axios.create({
-  baseURL: 'https://practices-api.vercel.app',
-});
+import { instance } from "./api";
 
 export const getAllUsers = async (page, limit) => {
   const { data } = await instance.get(`/users?page=${page}&limit=${limit}`);
