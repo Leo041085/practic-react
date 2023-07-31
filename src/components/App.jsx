@@ -7,6 +7,8 @@ import HomePage from 'pages/HomePage';
 import Layout from 'layout/Layout';
 import { ToDoPage } from 'pages/ToDoPage';
 import { CreateToDoPage } from 'pages/CreateToDoPage';
+import LoginPage from 'pages/LoginPage';
+import SignUpPage from 'pages/SignUpPage';
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="toDo" element={<ToDoPage />} />
           <Route path="toDo/create" element={<CreateToDoPage />} />
         </Route>
+        <Route path="/login" element={<LoginPage/>}/>
+        <Route path="/registration" element={<SignUpPage/>}/>
       </Routes>
     </>
   );
